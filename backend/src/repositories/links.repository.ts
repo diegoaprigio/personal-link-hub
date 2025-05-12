@@ -7,6 +7,24 @@ import Link from 'src/types/Link';
 export default class LinksRepository {
   constructor(private readonly prisma: PrismaHelper) {}
 
+  public async getLinks(userId: string): Promise<Link[]> {
+    const links = await this.prisma.link.findMany({
+      where: { userId },
+      orderBy: { order: 'asc' },
+    });
+    if (!links) {
+      return [];
+    }
+    return links.map((link) => ({
+      id: link.id,
+      userId: link.userId,
+      title: link.title,
+      link: link.link,
+      order: link.order,
+      logo: link.logo,
+    }));
+  }
+
   public async createLink(linkData: Link): Promise<Link> {
     const count = await this.prisma.link.count({
       where: { userId: linkData.userId },
