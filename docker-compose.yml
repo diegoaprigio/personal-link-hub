@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: linktree-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - "${BACKEND_PORT:-4000}:${BACKEND_PORT:-4000}"
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    container_name: linktree-frontend
+    restart: unless-stopped
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
